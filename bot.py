@@ -43,7 +43,7 @@ async def b(ctx, *args):
             png_file_name = png_file_name[:-1]
         png_file_name += uuid.uuid4().hex + '.png'
         png_file_name = png_file_name.lower()
-        png_file_name = os.path.join('preJPGs/', png_file_name)
+        png_file_name = os.path.join('/prejpgs/', png_file_name)
         await ctx.message.attachments[0].save(png_file_name)
         await ctx.message.channel.send('Getting buttered up...')
         try:
@@ -67,7 +67,7 @@ async def bme(ctx, *args):
     author = ctx.message.author
     url = author.avatar_url
     pfp_filename = uuid.uuid4().hex + '.png'
-    pfp_filename = os.path.join('pfp/', pfp_filename)
+    pfp_filename = os.path.join('/pfp/', pfp_filename)
     r = requests.get(url, allow_redirects=True)
     open(pfp_filename, 'wb').write(r.content)
     try:
