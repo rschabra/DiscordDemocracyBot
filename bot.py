@@ -48,26 +48,49 @@ async def b(ctx, *args):
         await ctx.message.channel.send('Getting buttered up...')
         try:
             image = Image.open(png_file_name)
+            filename = process_image(image)
+            attachmentName = ntpath.basename(filename)
+            file = discord.File(filename, filename = attachmentName)
+            embed = discord.Embed(title="Image With Da Butta On It", color=0x00ff00)
+            embed.set_image(url= ("attachment://" + attachmentName))
+            await ctx.message.channel.send(file=file, embed=embed)
+            # if os.path.exists(filename):
+            #     os.remove(filename)
+            #     os.remove(png_file_name)
         except Exception as err:
             #uh oh. Something went wrong.
             print('Uploaded image open error: ' + err)
             return 'Error: ' + err
+
+@client.command(pass_context=True)
+async def bme(ctx, *args):
+    author = ctx.message.author
+    url = author.avatar_url
+    pfp_filename = uuid.uuid4().hex + '.png'
+    pfp_filename = os.path.join('pfp/', pfp_filename)
+    r = requests.get(url, allow_redirects=True)
+    open(pfp_filename, 'wb').write(r.content)
+    try:
+        image = Image.open(pfp_filename)
         filename = process_image(image)
         attachmentName = ntpath.basename(filename)
         file = discord.File(filename, filename = attachmentName)
-        embed = discord.Embed(title="Image With Da Butta On It", color=0x00ff00)
+        embed = discord.Embed(title="Profile Pic With Da Butta On It", color=0x00ff00)
         embed.set_image(url= ("attachment://" + attachmentName))
         await ctx.message.channel.send(file=file, embed=embed)
-        if os.path.exists(filename):
-            os.remove(filename)
-            os.remove(png_file_name)
-    return
-
+        # if os.path.exists(filename):
+        #     os.remove(filename)
+        #     os.remove(pfp_filename)
+    except Exception as err:
+        #uh oh. Something went wrong.
+        print('Uploaded image open error: ' + err)
+        return 'Error: ' + err
 
 def process_image(img):
   #open up the mask
   mask = Image.open('mask.png')
   mask = mask.convert('RGBA')
+  img = img.convert('RGBA')
 
   ratio = 614.0/984.0
   newHeight = round(ratio*img.width)
